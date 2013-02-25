@@ -1,0 +1,246 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="EloDataModel.Store" Alias="Self" Provider="System.Data.SqlClient" ProviderManifestToken="2008" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityContainer Name="EloDataModelStoreContainer">
+    <EntitySet Name="Players" EntityType="EloDataModel.Store.Players" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="GameTypes" EntityType="EloDataModel.Store.GameTypes" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Games" EntityType="EloDataModel.Store.Games" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="GameScores" EntityType="EloDataModel.Store.GameScores" store:Type="Tables" Schema="dbo" />
+    <AssociationSet Name="GameGameType" Association="EloDataModel.Store.GameGameType">
+      <End Role="Game" EntitySet="Games" />
+      <End Role="GameType" EntitySet="GameTypes" />
+    </AssociationSet>
+    <AssociationSet Name="GameScoreGame" Association="EloDataModel.Store.GameScoreGame">
+      <End Role="GameScore" EntitySet="GameScores" />
+      <End Role="Game" EntitySet="Games" />
+    </AssociationSet>
+    <AssociationSet Name="GameScorePlayer" Association="EloDataModel.Store.GameScorePlayer">
+      <End Role="GameScore" EntitySet="GameScores" />
+      <End Role="Player" EntitySet="Players" />
+    </AssociationSet>
+  </EntityContainer>
+  <EntityType Name="Players">
+    <Key>
+      <PropertyRef Name="PlayerID" />
+    </Key>
+    <Property Name="PlayerID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Name" Type="nvarchar(max)" Nullable="false" />
+  </EntityType>
+  <EntityType Name="GameTypes">
+    <Key>
+      <PropertyRef Name="GameTypeID" />
+    </Key>
+    <Property Name="GameTypeID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Name" Type="nvarchar(max)" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Games">
+    <Key>
+      <PropertyRef Name="GameID" />
+    </Key>
+    <Property Name="GameID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="GameTypeID" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="GameScores">
+    <Key>
+      <PropertyRef Name="GameID" />
+      <PropertyRef Name="PlayerID" />
+    </Key>
+    <Property Name="GameID" Type="int" Nullable="false" />
+    <Property Name="PlayerID" Type="int" Nullable="false" />
+    <Property Name="Score" Type="real" Nullable="false" />
+  </EntityType>
+  <Association Name="GameGameType">
+    <End Role="Game" Type="EloDataModel.Store.Games" Multiplicity="*" />
+    <End Role="GameType" Type="EloDataModel.Store.GameTypes" Multiplicity="1" />
+    <ReferentialConstraint>
+      <Principal Role="GameType">
+        <PropertyRef Name="GameTypeID" />
+      </Principal>
+      <Dependent Role="Game">
+        <PropertyRef Name="GameTypeID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="GameScoreGame">
+    <End Role="GameScore" Type="EloDataModel.Store.GameScores" Multiplicity="*" />
+    <End Role="Game" Type="EloDataModel.Store.Games" Multiplicity="1" />
+    <ReferentialConstraint>
+      <Principal Role="Game">
+        <PropertyRef Name="GameID" />
+      </Principal>
+      <Dependent Role="GameScore">
+        <PropertyRef Name="GameID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="GameScorePlayer">
+    <End Role="GameScore" Type="EloDataModel.Store.GameScores" Multiplicity="*" />
+    <End Role="Player" Type="EloDataModel.Store.Players" Multiplicity="1" />
+    <ReferentialConstraint>
+      <Principal Role="Player">
+        <PropertyRef Name="PlayerID" />
+      </Principal>
+      <Dependent Role="GameScore">
+        <PropertyRef Name="PlayerID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+</Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema xmlns="http://schemas.microsoft.com/ado/2009/11/edm" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" Namespace="EloDataModel" Alias="Self" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" annotation:UseStrongSpatialTypes="false">
+        <EntityContainer Name="EloContainer" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Players" EntityType="EloDataModel.Player" />
+          <EntitySet Name="GameTypes" EntityType="EloDataModel.GameType" />
+          <EntitySet Name="Games" EntityType="EloDataModel.Game" />
+          <AssociationSet Name="GameGameType" Association="EloDataModel.GameGameType">
+            <End Role="Game" EntitySet="Games" />
+            <End Role="GameType" EntitySet="GameTypes" />
+          </AssociationSet>
+          <EntitySet Name="GameScores" EntityType="EloDataModel.GameScore" />
+          <AssociationSet Name="GameScoreGame" Association="EloDataModel.GameScoreGame">
+            <End Role="GameScore" EntitySet="GameScores" />
+            <End Role="Game" EntitySet="Games" />
+          </AssociationSet>
+          <AssociationSet Name="GameScorePlayer" Association="EloDataModel.GameScorePlayer">
+            <End Role="GameScore" EntitySet="GameScores" />
+            <End Role="Player" EntitySet="Players" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="Player">
+          <Key>
+            <PropertyRef Name="PlayerID" />
+          </Key>
+          <Property Type="Int32" Name="PlayerID" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <NavigationProperty Name="GameScores" Relationship="EloDataModel.GameScorePlayer" FromRole="Player" ToRole="GameScore" />
+          <Property Type="String" Name="Name" Nullable="false" />
+        </EntityType>
+        <EntityType Name="GameType">
+          <Key>
+            <PropertyRef Name="GameTypeID" />
+          </Key>
+          <Property Type="Int32" Name="GameTypeID" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <NavigationProperty Name="Games" Relationship="EloDataModel.GameGameType" FromRole="GameType" ToRole="Game" />
+          <Property Type="String" Name="Name" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Game">
+          <Key>
+            <PropertyRef Name="GameID" />
+          </Key>
+          <Property Type="Int32" Name="GameID" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <NavigationProperty Name="GameType" Relationship="EloDataModel.GameGameType" FromRole="Game" ToRole="GameType" />
+          <Property Type="Int32" Name="GameTypeID" Nullable="false" />
+          <NavigationProperty Name="GameScores" Relationship="EloDataModel.GameScoreGame" FromRole="Game" ToRole="GameScore" />
+        </EntityType>
+        <Association Name="GameGameType">
+          <End Type="EloDataModel.Game" Role="Game" Multiplicity="*" />
+          <End Type="EloDataModel.GameType" Role="GameType" Multiplicity="1" />
+          <ReferentialConstraint>
+            <Principal Role="GameType">
+              <PropertyRef Name="GameTypeID" />
+            </Principal>
+            <Dependent Role="Game">
+              <PropertyRef Name="GameTypeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="GameScore" >
+          <Key>
+            <PropertyRef Name="GameID" />
+            <PropertyRef Name="PlayerID" />
+          </Key>
+          <NavigationProperty Name="Game" Relationship="EloDataModel.GameScoreGame" FromRole="GameScore" ToRole="Game" />
+          <Property Type="Int32" Name="GameID" Nullable="false" />
+          <NavigationProperty Name="Player" Relationship="EloDataModel.GameScorePlayer" FromRole="GameScore" ToRole="Player" />
+          <Property Type="Int32" Name="PlayerID" Nullable="false" />
+          <Property Type="Single" Name="Score" Nullable="false" />
+        </EntityType>
+        <Association Name="GameScoreGame">
+          <End Type="EloDataModel.GameScore" Role="GameScore" Multiplicity="*" />
+          <End Type="EloDataModel.Game" Role="Game" Multiplicity="1" />
+          <ReferentialConstraint>
+            <Principal Role="Game">
+              <PropertyRef Name="GameID" />
+            </Principal>
+            <Dependent Role="GameScore">
+              <PropertyRef Name="GameID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="GameScorePlayer">
+          <End Type="EloDataModel.GameScore" Role="GameScore" Multiplicity="*" />
+          <End Type="EloDataModel.Player" Role="Player" Multiplicity="1" />
+          <ReferentialConstraint>
+            <Principal Role="Player">
+              <PropertyRef Name="PlayerID" />
+            </Principal>
+            <Dependent Role="GameScore">
+              <PropertyRef Name="PlayerID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+    <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="EloDataModelStoreContainer" CdmEntityContainer="EloContainer">
+    <EntitySetMapping Name="Players">
+      <EntityTypeMapping TypeName="IsTypeOf(EloDataModel.Player)">
+        <MappingFragment StoreEntitySet="Players">
+          <ScalarProperty Name="PlayerID" ColumnName="PlayerID" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="GameTypes">
+      <EntityTypeMapping TypeName="IsTypeOf(EloDataModel.GameType)">
+        <MappingFragment StoreEntitySet="GameTypes">
+          <ScalarProperty Name="GameTypeID" ColumnName="GameTypeID" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Games">
+      <EntityTypeMapping TypeName="IsTypeOf(EloDataModel.Game)">
+        <MappingFragment StoreEntitySet="Games">
+          <ScalarProperty Name="GameID" ColumnName="GameID" />
+          <ScalarProperty Name="GameTypeID" ColumnName="GameTypeID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="GameScores">
+      <EntityTypeMapping TypeName="IsTypeOf(EloDataModel.GameScore)">
+        <MappingFragment StoreEntitySet="GameScores">
+          <ScalarProperty Name="GameID" ColumnName="GameID" />
+          <ScalarProperty Name="PlayerID" ColumnName="PlayerID" />
+          <ScalarProperty Name="Score" ColumnName="Score" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+  </EntityContainerMapping>
+</Mapping></edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <edmx:Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </edmx:Connection>
+    <edmx:Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="True" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </edmx:Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>
