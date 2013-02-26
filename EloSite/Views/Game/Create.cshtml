@@ -1,0 +1,37 @@
+﻿@model EloSite.Models.GameViewModel
+
+@{
+    ViewBag.Title = "Record Game";
+}
+
+<h2>Record Game</h2>
+
+@using (Html.BeginForm()) {
+    @Html.ValidationSummary(true)
+
+    <fieldset>
+        <legend>GameViewModel</legend>
+        
+        @foreach (var gameScore in Model.Scores)
+        {
+            @gameScore.Player.Name
+            @Html.TextBoxFor(score => gameScore.Score)
+        }
+        
+        @Html.DropDownList("newPlayer", ViewBag.RemainingPlayers)
+        <input type="text" name="newPlayerScore" />
+
+        <p>
+            <input type="submit" value="Add More Players" />
+            <input type="submit" value="Finished" />
+        </p>
+    </fieldset>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
